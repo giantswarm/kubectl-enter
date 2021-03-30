@@ -14,7 +14,6 @@ import (
 )
 
 type Flag struct {
-	Namespace      string
 	DockerRegistry string
 	ServiceAccount string
 }

@@ -22,5 +22,6 @@ node name can get obtained from the `kubectl get node` command
 - ServiceAccount - `KUBECTL_ENTER_SA` - specify which service account should be used to be able spawn privileged pod with hostPID settings, this is necessery in case your cluster is running strict PSP. IF you do not enforce PSP you could set to 'default'.The default settings is set to 'kube-proxy' as this service account has often enought privileges for this purpose.
 
 
-## 
+## implementation detail
+the access is gained by running a privileged pod with hostPID security settings and than running `kubectl exec` command towards that pod and executing `nsenter` cmmand with specific settings to run `/bin/bash` in the OS root namespace (thus geeting out of the container bounds)
 
