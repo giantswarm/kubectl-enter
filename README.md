@@ -1,30 +1,24 @@
-[![CircleCI](https://circleci.com/gh/giantswarm/template.svg?style=shield)](https://circleci.com/gh/giantswarm/template)
+# kubectl-enter
+kubectl-enter is a kubectl plugin to gain ssh like access to a specific node in your k8s cluster. This plugin does not require any direct access to a node, you only need to be able talk to k8s api and be able to spawn pod on the privileged pod with hostPID security setting. You will gain root access on the under root user.
 
-# REPOSITORY_NAME
+## requirements
+- `kubectl` - needs to be in a path as the plugin is calling `kubectl` without any absolute path
 
-This is a template repository containing some basic files every repository
-needs.
+## how to install
+- clone the repo and build the plugin with `go build`
+- copy plugin into path `cp ./kubectl-enter /usr/local/bin/`
 
-To use it just hit `Use this template` button or [this link][generate].
+##  how to run
+```
+kubectl enter my-node-name
+```
+node name can get obtained from the `kubectl get node` command
 
-Things to do with your newly created repo:
+## configuration
 
-1. Run`devctl replace -i "REPOSITORY_NAME" "$(basename $(git rev-parse
-   --show-toplevel))" --ignore '.git/**' '**'`.
-2. Run `devctl replace -i "template" "$(basename $(git rev-parse
-   --show-toplevel))" --ignore '.git/**' '**'`.
-3. Go to https://github.com/giantswarm/REPOSITORY_NAME/settings and make sure `Allow
-   merge commits` box is unchecked and `Automatically delete head branches` box
-   is checked.
-4. Go to https://github.com/giantswarm/REPOSITORY_NAME/settings/access and add
-   `giantswarm/bots` with `Write` access and `giantswarm/employees` with
-   `Admin` access.
-5. Add this repository to https://github.com/giantswarm/github.
-6. Create quay.io docker repository if needed.
-7. Add the project to the CircleCI:
-   https://circleci.com/setup-project/gh/giantswarm/REPOSITORY_NAME
-8. Change the badge (with style=shield):
-   https://circleci.com/gh/giantswarm/REPOSITORY_NAME.svg?style=shield&circle-token=TOKEN_FOR_PRIVATE_REPO
-   If this is a private repository token with scope `status` will be needed.
+- DockerRegistry - `KUBECTL_ENTER_REGISTRY` - specify docker registry for the pod image that is used for spawning the pod, defaults to 'docker.io', should not need changes unless the registry is blocked
+- ServiceAccount - `KUBECTL_ENTER_SA` - specify which service account should be used to be able spawn privileged pod with hostPID settings, this is necessery in case your cluster is running strict PSP. IF you do not enforce PSP you could set to 'default'.The default settings is set to 'kube-proxy' as this service account has often enought privileges for this purpose.
 
-[generate]: https://github.com/giantswarm/template/generate
+
+## 
+
