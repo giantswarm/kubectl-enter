@@ -13,10 +13,9 @@ const (
 	runCommandDockerImage   = "giantswarm/alpine:3.11.6"
 	runCommandNamespace     = metav1.NamespaceSystem
 	runCommandPriorityClass = "system-cluster-critical"
-	runCommandSAName        = "kube-proxy"
 )
 
-func podSpec(nodeName string, dockerRegistry string) *corev1.Pod {
+func podSpec(nodeName string, dockerRegistry string, serviceAccount string) *corev1.Pod {
 	privileged := true
 	priority := int32(2000000000)
 	podName := fmt.Sprintf("exec-to-node-%s-helper", nodeName)
@@ -64,7 +63,7 @@ func podSpec(nodeName string, dockerRegistry string) *corev1.Pod {
 			RestartPolicy:      corev1.RestartPolicyNever,
 			Priority:           &priority,
 			PriorityClassName:  runCommandPriorityClass,
-			ServiceAccountName: runCommandSAName,
+			ServiceAccountName: serviceAccount,
 			Tolerations: []corev1.Toleration{
 				{
 					Key:      "node.kubernetes.io/unschedulable",

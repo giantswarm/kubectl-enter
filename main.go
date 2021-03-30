@@ -16,6 +16,7 @@ import (
 type Flag struct {
 	Namespace      string
 	DockerRegistry string
+	ServiceAccount string
 }
 
 func main() {
@@ -29,17 +30,29 @@ func mainError() error {
 	var err error
 
 	var f Flag
-	flag.StringVar(&f.Namespace, "namespace", "", "ns of the pod")
-	flag.StringVar(&f.DockerRegistry, "registry", "docker.io", "registry for the sleepr container")
+	flag.StringVar(&f.DockerRegistry, "registry", os.Getenv("KUBECTL_ENTER_REGISTRY"), "registry for the sleeper container, also can be set via env KUBECTL_ENTER_REGISTRY, defaults to 'docker.io'")
+	flag.StringVar(&f.ServiceAccount, "service-account", os.Getenv("KUBECTL_ENTER_SA"), "service account that has privileges to run privileged container with host pid, also can be set via env KUBECTL_ENTER_SA, defaults to 'kube-proxy'")
+
+	if f.DockerRegistry == "" {
+		f.DockerRegistry = "docker.io"
+	}
+	if f.ServiceAccount == "" {
+		f.ServiceAccount = "kube-proxy"
+	}
 
 	if len(os.Args) > 1 && os.Args[1] == "version" {
 		fmt.Printf("exec-to-node: - 0.0.1")
 		return nil
 	}
-	if len(os.Args) > 1 && os.Args[1] == "--help" {
+
+	if len(os.Args) > 1 && (os.Args[1] == "--help" || os.Args[1] == "-h") {
+		fmt.Print("Kubectl 'enter' plugin will give ssh like access to a node\n")
+		fmt.Print("How to run: ./kubectl enter my-node-name\n")
+
 		flag.Usage()
 		return nil
 	}
+
 	flag.Parse()
 
 	nodeName := os.Args[1]
@@ -57,7 +70,7 @@ func mainError() error {
 		return microerror.Mask(err)
 	}
 
-	pod := podSpec(nodeName, f.DockerRegistry)
+	pod := podSpec(nodeName, f.DockerRegistry, f.ServiceAccount)
 
 	err = client.Create(ctx, pod)
 	if errors.IsAlreadyExists(err) {

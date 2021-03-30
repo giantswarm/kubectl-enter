@@ -1,4 +1,4 @@
-module github.com/giantswarm/exec-to-node
+module github.com/giantswarm/kubectl-enter
 
 go 1.15
 

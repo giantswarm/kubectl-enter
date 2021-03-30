@@ -47,6 +47,5 @@ func GetCtrlClient() (ctrl.Client, error) {
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
-
 	return client, nil
 }
