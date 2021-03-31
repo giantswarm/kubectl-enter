@@ -1,7 +1,7 @@
 Disclaimer: Use at your own risk, the developer and the company do not hold any responsibility by misusing the tool to gain prohibited access. This is only internal tooling used to give privileged person access to a node he is allowed to access. 
 
 # kubectl-enter
-kubectl-enter is a kubectl plugin to gain ssh like access to a specific node in your k8s cluster. This plugin does not require any direct access to a node, you only need to be able talk to k8s api and be able to spawn pod on the privileged pod with hostPID security setting. You will gain root access on the under root user.
+kubectl-enter is a kubectl plugin to gain ssh like access to a specific node in your k8s cluster. This plugin does not require any direct access to a node, you only need to be able talk to k8s api and be able to spawn pod on the privileged pod with hostPID security setting. You will gain root access on the node under root user in operating system as you would have classic ssh.
 
 Plugin will use default kubectl context and kubeconfig located in `$HOME/.kube/config`
 
