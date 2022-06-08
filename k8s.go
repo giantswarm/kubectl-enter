@@ -4,10 +4,9 @@ import (
 	"github.com/giantswarm/microerror"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/client-go/rest"
+	_ "k8s.io/client-go/plugin/pkg/client/auth/oidc"
 	"k8s.io/kubectl/pkg/scheme"
 	ctrl "sigs.k8s.io/controller-runtime/pkg/client"
-	"sigs.k8s.io/controller-runtime/pkg/client/apiutil"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 )
 
@@ -31,19 +30,7 @@ func GetCtrlClient() (ctrl.Client, error) {
 		return nil, microerror.Mask(err)
 	}
 
-	// Configure a dynamic rest mapper to the controller client so it can work
-	// with runtime objects of arbitrary types. Note that this is the default
-	// for controller clients created by controller-runtime managers.
-	// Anticipating a rather uncertain future and more breaking changes to come
-	// we want to separate client and manager. Thus we configure the client here
-	// properly on our own instead of relying on the manager to provide a
-	// client, which might change in the future.
-	mapper, err := apiutil.NewDynamicRESTMapper(rest.CopyConfig(restConfig))
-	if err != nil {
-		return nil, microerror.Mask(err)
-	}
-
-	client, err := ctrl.New(restConfig, ctrl.Options{Scheme: scheme.Scheme, Mapper: mapper})
+	client, err := ctrl.New(restConfig, ctrl.Options{})
 	if err != nil {
 		return nil, microerror.Mask(err)
 	}
