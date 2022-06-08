@@ -3,7 +3,7 @@ module github.com/giantswarm/kubectl-enter
 go 1.17
 
 require (
-	github.com/giantswarm/microerror v0.3.0
+	github.com/giantswarm/microerror v0.4.0
 	github.com/spf13/pflag v1.0.5
 	k8s.io/api v0.20.5
 	k8s.io/apimachinery v0.20.5
